@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="$Extras.Translation.language">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index,follow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta property="og:site_name" content="$station.location | Weather">
+    <meta property="og:title" content="$station.location | Weather">
+    <meta property="og:description" content="$Extras.description">
+    <meta name="description" content="$Extras.description">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="weather-icons/css/weather-icons.min.css" type="text/css">
+    <link rel="stylesheet" href="weather-icons/css/weather-icons-wind.min.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <title>$station.location $Extras.Translation.title_suffix | STATION INFO</title>
+
+    <!-- Webapp capability -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-title" content="$station.location $Extras.Translation.title_suffix">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico" />
+</head>
+<body>
+
+<!-- Content -->
+<header>
+    <div class="container">
+        <div class="title">
+        <a href="index.html" style="text-decoration: none;">
+            <h2>$station.location</h2>
+            <h3>$current.dateTime.format("%m/%d/%Y %I:%M %p")</h3>
+        </a>
+        </div>
+
+        #if $almanac.hasExtras
+        ## Extended almanac information is available. Do the full set of tables.
+        #set $sun_altitude = $almanac.sun.alt
+          #if $sun_altitude < 0
+            #set $sun_None="(Always down)"
+            #set $daylight_str = "00:00"
+          #else
+            #set $sun_None="(Always up)"
+            #set $daylight_str = "24:00"
+          #end if
+          #set $sunrise_ts = $almanac.sun.rise.raw
+          #set $sunset_ts = $almanac.sun.set.raw
+          #if $sunrise_ts and $sunset_ts
+            #set $daylight_s = $sunset_ts - $sunrise_ts
+            #set $daylight_hours = int($daylight_s / 3600)
+            #set $daylight_minutes = int(($daylight_s % 3600) / 60)
+            #set $daylight_str = "%02d:%02d" % ($daylight_hours, $daylight_minutes)
+          #end if
+          <!--<a data-fancybox data-src="#almanac" href="javascript:;" role="button" style="text-decoration: none;">-->
+          <a href="celestial.html" style="text-decoration: none;">
+        <table class="unstyled almanac">
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-sunrise"></i></td>
+                <td>$almanac.sun.rise.string($sun_None)</td>
+                <td style="text-align: center;"><i class="wi wi-moonrise"></i></td>
+                <td>$almanac.moon.rise</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-sunset"></i></td>
+                <td>$almanac.sun.set.string($sun_None)</td>
+                <td style="text-align: center;"><i class="wi wi-moonset"></i></td>
+                <td>$almanac.moon.set</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-day-sunny"></i></td>
+                <td>$daylight_str OF SUN<!--$Extras.Translation.more_button--></td>
+                <td style="text-align: center;">
+                    #if $almanac.moon_phase == "New"
+                    <i class="wi wi-moon-new"></i>
+                    #else if $almanac.moon_phase == "Waxing crescent"
+                    <i class="wi wi-moon-waxing-crescent-4"></i>
+                    #else if $almanac.moon_phase == "First quarter"
+                    <i class="wi wi-moon-first-quarter"></i>
+                    #else if $almanac.moon_phase == "Waxing gibbous"
+                    <i class="wi wi-moon-waxing-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Full"
+                    <i class="wi wi-moon-full"></i>
+                    #else if $almanac.moon_phase == "Waning gibbous"
+                    <i class="wi wi-moon-waning-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Last quarter"
+                    <i class="wi wi-moon-third-quarter"></i>
+                    #else if $almanac.moon_phase == "Waning crescent"
+                    <i class="wi wi-moon-waning-crescent-4"></i>
+                    #else
+                    <i class="wi wi-moon-waning-crescent-3"></i>
+                    #end if
+                </td>
+                <td>$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
+            </tr>
+        </table>
+        </a>
+        #else
+        ## No extended almanac information available. Fall back to a simple table.
+        <table class="unstyled almanac">
+            <tr>
+                <td><i class="wi wi-sunrise"></i></td>
+                <td>$almanac.sunrise</td>
+                <td><i class="wi wi-sunset"></i></td>
+                <td>$almanac.sunset</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    #if $almanac.moon_phase == "New"
+                    <i class="wi wi-moon-new"></i>
+                    #else if $almanac.moon_phase == "Waxing crescent"
+                    <i class="wi wi-moon-waxing-crescent-4"></i>
+                    #else if $almanac.moon_phase == "First quarter"
+                    <i class="wi wi-moon-first-quarter"></i>
+                    #else if $almanac.moon_phase == "Waxing gibbous"
+                    <i class="wi wi-moon-waxing-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Full"
+                    <i class="wi wi-moon-full"></i>
+                    #else if $almanac.moon_phase == "Waning gibbous"
+                    <i class="wi wi-moon-waning-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Last quarter"
+                    <i class="wi wi-moon-third-quarter"></i>
+                    #else if $almanac.moon_phase == "Waning crescent"
+                    <i class="wi wi-moon-waning-crescent-4"></i>
+                    #else
+                    <i class="wi wi-moon-waning-crescent-3"></i>
+                    #end if
+                </td>
+                <td>$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
+            </tr>
+        </table>
+        #end if
+
+    </div>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html">$Extras.Translation.title_current</a></li>
+                <li><a href="week.html">$Extras.Translation.title_week</a></li>
+                <li><a href="month.html">$Extras.Translation.title_month</a></li>
+                <li><a href="year.html">$Extras.Translation.title_year</a></li>
+                <li><a href="archive.html">$Extras.Translation.title_archive</a></li>
+                <li><a href="maps.html">$Extras.Translation.title_maps</a></li>
+                <li class="active"><a href="station.html">STATION</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+
+        <!-- Main data -->
+        <div class="row gutters row-gutters">
+          <div class="col col-4 crd">
+
+              <h4>HARDWARE</h4>
+              <div class="crd-content">
+                  <table class="meta">
+                      <tr>
+                          <td>Vaisala:</td>
+                          <td></td>
+                          <td>WXT536</td>
+                      </tr>
+                      <tr>
+                          <td>Lufft:</td>
+                          <td></td>
+                          <td>WS10</td>
+                      </tr>
+                  </table>
+              </div>
+
+          </div>
+          <div class="col col-4 crd">
+
+            <h4>SOFTWARE</h4>
+            <div class="crd-content">
+                <table class="meta">
+                    <tr>
+                        <td>WeeWX:</td>
+                        <td></td>
+                        <td><a href="http://weewx.com" target="_blank">v$station.version</a></td>
+                    </tr>
+                    <tr>
+                        <td>Theme:</td>
+                        <td></td>
+                        <td><a href="https://github.com/neoground/neowx" target="_blank">NeoWX</a></td>
+                    </tr>
+                </table>
+            </div>
+
+          </div>
+            <div class="col col-4 crd">
+
+                <h4><i class="wi wi-earthquake"></i> VOLTAGES</h4>
+                <div class="crd-content">
+                    <table class="meta">
+                        <tr>
+                            <td>$obs.label.supplyVoltage:</td>
+                            <td></td>
+                            <td>$current.supplyVoltage</td>
+                        </tr>
+                        <tr>
+                            <td>$obs.label.heatingVoltage:</td>
+                            <td></td>
+                            <td>$current.heatingVoltage</td>
+                        </tr>
+                        <tr>
+                            <td>$obs.label.referenceVoltage:</td>
+                            <td></td>
+                            <td>$current.referenceVoltage</td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+            <!--
+            <div class="col col-3 crd">
+
+                <h4><i class="wi wi-earthquake"></i> CPU</h4>
+                <div class="crd-content">
+                    <table class="meta">
+                        <tr>
+                            <td>5 Min AVG:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td>15 Min AVG:</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+
+            </div>
+          -->
+        </div>
+        <div class="row gutters row-gutters">
+          <div class="col col-3">
+          </div>
+          <!--<div class="col col-3 crd">
+
+            <h4>LOCATION</h4>
+            <div class="crd-content">
+                <table class="meta">
+                    <tr>
+                        <td>Latitude:</td>
+                        <td></td>
+                        <td>$station.latitude[0]&deg; $station.latitude[1]' $station.latitude[2]</td>
+                    </tr>
+                    <tr>
+                        <td>Longitude:</td>
+                        <td></td>
+                        <td>$station.longitude[0]&deg; $station.longitude[1]' $station.longitude[2]</td>
+                    </tr>
+                    <tr>
+                        <td>Altitude:</td>
+                        <td></td>
+                        <td>$station.altitude</td>
+                    </tr>
+                </table>
+            </div>
+
+          </div>
+        -->
+          <div class="col col-3">
+          </div>
+          <div class="col col-3">
+          </div>
+          <div class="col col-3">
+          </div>
+        </div>
+
+        <!-- GRAPHS -->
+        <!--
+        <div class="row gutters row-gutters">
+            <div class="col col-6 crd graph-crd">
+                <a data-fancybox="gallery" href="daytempdew.png"><img src="daytempdew.png" alt="$Extras.Translation.temperatures"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <a data-fancybox="gallery" href="daytempchill.png"><img src="daytempchill.png" alt="$Extras.Translation.wind_chill & $Extras.Translation.heat_index"></a>
+            </div>
+        </div>
+      -->
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <center>
+        <p><a href="station.html">STATION INFO</a>
+            &bull; <a target="_blank" href="data.json">JSON</a>
+            <br />&copy; $current.dateTime.format("%Y") Andrew Billits / Griffin Park Weather
+        </p>
+        </center>
+    </div>
+</footer>
+
+<div style="display: none;">
+    <div id="data_loading"><i class="loading wi wi-thermometer"></i></div>
+</div>
+
+<!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
+<script src="main.min.js"></script>
+<script type="text/javascript">
+var tid = setInterval(newDataCheck, 5000);
+var currentDataStamp = $current.dateTime.raw;
+function newDataCheck() {
+  $.getJSON("data.json", function(json) {
+      //console.log(json); // this will show the info it in firebug console
+      //alert(json["last-updated"]);
+      if (json["last-updated"] > currentDataStamp) {
+        //reload page
+        location.reload(true);
+      } else {
+        //update live data
+      }
+  });
+}
+function abortTimer() { // to be called when you want to stop the timer
+  clearInterval(tid);
+}
+</script>
+</body>
+</html>

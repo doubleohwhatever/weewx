@@ -1,0 +1,17 @@
+Light green: #0099bc
+Dark green : #2d7d9a
+Orange: #f7630c
+
+Our Orange: #D35D4E
+Our Light Green: #01A4B4
+
+
+link: #01A4B4
+link hover: #0099bc
+
+ style="white-space: nowrap;"
+
+$.getJSON("data.json", function(json) {
+    //console.log(json); // this will show the info it in firebug console
+    alert(json["last-updated"]);
+});

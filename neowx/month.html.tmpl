@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="$Extras.Translation.language">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="index,follow">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <meta property="og:site_name" content="$station.location | Weather">
+    <meta property="og:title" content="$station.location | Weather">
+    <meta property="og:description" content="$Extras.description">
+    <meta name="description" content="$Extras.description">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700,900" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="weather-icons/css/weather-icons.min.css" type="text/css">
+    <link rel="stylesheet" href="weather-icons/css/weather-icons-wind.min.css" type="text/css">
+    <link rel="stylesheet" href="style.css" type="text/css">
+
+    <title>$station.location $Extras.Translation.title_suffix | $Extras.Translation.title_month</title>
+
+    <!-- Webapp capability -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-title" content="$station.location $Extras.Translation.title_suffix">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.ico" />
+</head>
+<body>
+
+<!-- Content -->
+<header>
+    <div class="container">
+        <div class="title">
+        <a href="index.html" style="text-decoration: none;">
+            <h2>$station.location</h2>
+            <h3>$current.dateTime.format("%m/%d/%Y %I:%M %p")</h3>
+        </a>
+        </div>
+
+        #if $almanac.hasExtras
+        ## Extended almanac information is available. Do the full set of tables.
+        #set $sun_altitude = $almanac.sun.alt
+          #if $sun_altitude < 0
+            #set $sun_None="(Always down)"
+            #set $daylight_str = "00:00"
+          #else
+            #set $sun_None="(Always up)"
+            #set $daylight_str = "24:00"
+          #end if
+          #set $sunrise_ts = $almanac.sun.rise.raw
+          #set $sunset_ts = $almanac.sun.set.raw
+          #if $sunrise_ts and $sunset_ts
+            #set $daylight_s = $sunset_ts - $sunrise_ts
+            #set $daylight_hours = int($daylight_s / 3600)
+            #set $daylight_minutes = int(($daylight_s % 3600) / 60)
+            #set $daylight_str = "%02d:%02d" % ($daylight_hours, $daylight_minutes)
+          #end if
+          <!--<a data-fancybox data-src="#almanac" href="javascript:;" role="button" style="text-decoration: none;">-->
+          <a href="celestial.html" style="text-decoration: none;">
+        <table class="unstyled almanac">
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-sunrise"></i></td>
+                <td>$almanac.sun.rise.string($sun_None)</td>
+                <td style="text-align: center;"><i class="wi wi-moonrise"></i></td>
+                <td>$almanac.moon.rise</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-sunset"></i></td>
+                <td>$almanac.sun.set.string($sun_None)</td>
+                <td style="text-align: center;"><i class="wi wi-moonset"></i></td>
+                <td>$almanac.moon.set</td>
+            </tr>
+            <tr>
+                <td style="text-align: center;"><i class="wi wi-day-sunny"></i></td>
+                <td>$daylight_str OF SUN<!--$Extras.Translation.more_button--></td>
+                <td style="text-align: center;">
+                    #if $almanac.moon_phase == "New"
+                    <i class="wi wi-moon-new"></i>
+                    #else if $almanac.moon_phase == "Waxing crescent"
+                    <i class="wi wi-moon-waxing-crescent-4"></i>
+                    #else if $almanac.moon_phase == "First quarter"
+                    <i class="wi wi-moon-first-quarter"></i>
+                    #else if $almanac.moon_phase == "Waxing gibbous"
+                    <i class="wi wi-moon-waxing-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Full"
+                    <i class="wi wi-moon-full"></i>
+                    #else if $almanac.moon_phase == "Waning gibbous"
+                    <i class="wi wi-moon-waning-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Last quarter"
+                    <i class="wi wi-moon-third-quarter"></i>
+                    #else if $almanac.moon_phase == "Waning crescent"
+                    <i class="wi wi-moon-waning-crescent-4"></i>
+                    #else
+                    <i class="wi wi-moon-waning-crescent-3"></i>
+                    #end if
+                </td>
+                <td>$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
+            </tr>
+        </table>
+        </a>
+        #else
+        ## No extended almanac information available. Fall back to a simple table.
+        <table class="unstyled almanac">
+            <tr>
+                <td><i class="wi wi-sunrise"></i></td>
+                <td>$almanac.sunrise</td>
+                <td><i class="wi wi-sunset"></i></td>
+                <td>$almanac.sunset</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>
+                    #if $almanac.moon_phase == "New"
+                    <i class="wi wi-moon-new"></i>
+                    #else if $almanac.moon_phase == "Waxing crescent"
+                    <i class="wi wi-moon-waxing-crescent-4"></i>
+                    #else if $almanac.moon_phase == "First quarter"
+                    <i class="wi wi-moon-first-quarter"></i>
+                    #else if $almanac.moon_phase == "Waxing gibbous"
+                    <i class="wi wi-moon-waxing-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Full"
+                    <i class="wi wi-moon-full"></i>
+                    #else if $almanac.moon_phase == "Waning gibbous"
+                    <i class="wi wi-moon-waning-gibbous-4"></i>
+                    #else if $almanac.moon_phase == "Last quarter"
+                    <i class="wi wi-moon-third-quarter"></i>
+                    #else if $almanac.moon_phase == "Waning crescent"
+                    <i class="wi wi-moon-waning-crescent-4"></i>
+                    #else
+                    <i class="wi wi-moon-waning-crescent-3"></i>
+                    #end if
+                </td>
+                <td>$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
+            </tr>
+        </table>
+        #end if
+
+    </div>
+
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html">$Extras.Translation.title_current</a></li>
+                <li><a href="week.html">$Extras.Translation.title_week</a></li>
+                <li class="active"><a href="month.html">$Extras.Translation.title_month</a></li>
+                <li><a href="year.html">$Extras.Translation.title_year</a></li>
+                <li><a href="archive.html">$Extras.Translation.title_archive</a></li>
+                <li><a href="maps.html">$Extras.Translation.title_maps</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+<main>
+    <div class="container">
+
+        <!-- Main data -->
+        <div class="row gutters row-gutters">
+          <div class="col col-3 crd">
+
+              <h4><i class="wi wi-strong-wind"></i> $Extras.Translation.wind</h4>
+              <div class="crd-content">
+
+                  <div class="row">
+                      <div class="col col-6 text-center">
+                          <h4>$Extras.Translation.wind_avg</h4>
+                          <span class="weatherdata_small">$month.wind.avg</span>
+                      </div>
+                      <div class="col col-6 text-center">
+                          <h4>$Extras.Translation.wind_rms</h4>
+                          <span class="weatherdata_small">$month.wind.rms</span>
+                      </div>
+                  </div>
+
+                  <div class="row"><div class="col col-12">&nbsp;</div></div>
+
+                  <div class="row">
+                      <div class="col col-6 text-center">
+                          <h4>$Extras.Translation.vector_avg</h4>
+                          <span class="weatherdata_small">
+                              $month.wind.vecavg<br> $month.wind.vecdir <i class="wi wi-wind from-$month.wind.vecdir.formatted-deg"></i>
+                          </span>
+                      </div>
+                      <div class="col col-6 text-center">
+                          <h4>$Extras.Translation.high</h4>
+                          <span class="weatherdata_small">
+                              $month.wind.max<br>
+                              $month.wind.gustdir <i class="wi wi-wind from-$month.wind.gustdir.formatted-deg"></i>
+                          </span>
+                          <span class="weatherdata_sub">$month.wind.maxtime</span>
+                      </div>
+                  </div>
+
+              </div>
+
+          </div>
+            <div class="col col-9">
+
+                <div class="row gutters row-gutters">
+                    <div class="col col-4 crd">
+
+                        <h4><i class="wi wi-thermometer"></i> $Extras.Translation.out_temp</h4>
+
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.high</h4>
+                                    <span class="weatherdata_small">$month.outTemp.max</span>
+                                    <span class="weatherdata_sub">$month.outTemp.maxtime</span>
+                                </div>
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.low</h4>
+                                    <span class="weatherdata_small">$month.outTemp.min</span>
+                                    <span class="weatherdata_sub">$month.outTemp.mintime</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col col-4 crd">
+
+                        <h4><i class="wi wi-humidity"></i> $Extras.Translation.out_humidity</h4>
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.high</h4>
+                                    <span class="weatherdata_small">$month.outHumidity.max</span>
+                                    <span class="weatherdata_sub">$month.outHumidity.maxtime</span>
+                                </div>
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.low</h4>
+                                    <span class="weatherdata_small">$month.outHumidity.min</span>
+                                    <span class="weatherdata_sub">$month.outHumidity.mintime</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col col-4 crd">
+
+                        <h4><i class="wi wi-barometer"></i> $Extras.Translation.barometer</h4>
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.high</h4>
+                                    <span class="weatherdata_small">$month.barometer.max</span>
+                                    <span class="weatherdata_sub">$month.barometer.maxtime</span>
+                                </div>
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.low</h4>
+                                    <span class="weatherdata_small">$month.barometer.min</span>
+                                    <span class="weatherdata_sub">$month.barometer.mintime</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row gutters row-gutters">
+                    <div class="col col-4 crd">
+
+                        <h4><i class="wi wi-umbrella"></i> $Extras.Translation.rain</h4>
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.rain_total</h4>
+                                    <span class="weatherdata_small">$month.rain.sum</span>
+                                </div>
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.high $Extras.Translation.rain_rate</h4>
+                                    <span class="weatherdata_small">$month.rainRate.max</span>
+                                    <span class="weatherdata_sub">$month.rainRate.maxtime</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col col-4 crd">
+
+                        <h4><i class="wi wi-dust"></i> AQI</h4>
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.high</h4>
+                                    <span class="weatherdata_small">$month('aqi_binding').aqi_pm2_5.max.formatted</span>
+                                    <span class="weatherdata_sub">$month('aqi_binding').aqi_pm2_5.maxtime</span>
+                                </div>
+                                <div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.low</h4>
+                                    <span class="weatherdata_small">$month('aqi_binding').aqi_pm2_5.min.formatted</span>
+                                    <span class="weatherdata_sub">$month('aqi_binding').aqi_pm2_5.mintime</span>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="col col-4 crd">
+
+                <h4><i class="wi wi-thermometer-exterior"></i> $Extras.Translation.dewpoint</h4>
+                <div class="crd-content">
+
+                    <div class="row">
+                        <div class="col col-6 text-center">
+                            <h4>$Extras.Translation.high</h4>
+                            <span class="weatherdata_small">$month.dewpoint.max</span>
+                            <span class="weatherdata_sub">$month.dewpoint.maxtime</span>
+                        </div>
+                        <div class="col col-6 text-center">
+                            <h4>$Extras.Translation.low</h4>
+                            <span class="weatherdata_small">$month.dewpoint.min</span>
+                            <span class="weatherdata_sub">$month.dewpoint.mintime</span>
+                        </div>
+                    </div>
+
+                </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="row gutters row-gutters">
+            <div class="col col-3 crd">
+
+                <h4><i class="wi wi-windy"></i> $Extras.Translation.wind_chill</h4>
+                <div class="crd-content">
+
+                    <div class="row">
+                        <div class="col col-12 text-center">
+                            <h4>$Extras.Translation.low</h4>
+                            <span class="weatherdata_small">$month.windchill.min</span>
+                            <span class="weatherdata_sub">$month.windchill.mintime</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col col-3 crd">
+
+                <h4><i class="wi wi-fire"></i> $Extras.Translation.heat_index</h4>
+                <div class="crd-content">
+
+                    <div class="row">
+                        <div class="col col-12 text-center">
+                            <h4>$Extras.Translation.high</h4>
+                            <span class="weatherdata_small">$month.heatindex.max</span>
+                            <span class="weatherdata_sub">$month.heatindex.maxtime</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="col col-3 crd">
+
+                        <h4><i class="wi wi-hot"></i> $Extras.Translation.radiation</h4>
+                        <div class="crd-content">
+
+                            <div class="row">
+                                <div class="col col-12 text-center">
+                                    <h4>$Extras.Translation.high</h4>
+                                    <span class="weatherdata_small">$month.radiation.max</span>
+                                    <span class="weatherdata_sub">$month.radiation.maxtime</span>
+                                </div>
+                                <!--<div class="col col-6 text-center">
+                                    <h4>$Extras.Translation.low</h4>
+                                    <span class="weatherdata_small">$month.radiation.min</span>
+                                    <span class="weatherdata_sub">$month.radiation.mintime</span>
+                                </div>-->
+                            </div>
+
+                        </div>
+
+            </div>
+            #if $month.UV.has_data
+            <div class="col col-3 crd">
+                <h4><i class="wi wi-hot"></i> $Extras.Translation.uv</h4>
+                <div class="crd-content">
+
+                    <div class="row">
+                        <div class="col col-12 text-center">
+                            <h4>$Extras.Translation.high</h4>
+                            <span class="weatherdata_small">$month.UV.max</span>
+                            <span class="weatherdata_sub">$month.UV.maxtime</span>
+                        </div>
+                        <!--<div class="col col-6 text-center">
+                            <h4>$Extras.Translation.low</h4>
+                            <span class="weatherdata_small">$month.UV.min</span>
+                            <span class="weatherdata_sub">$month.UV.mintime</span>
+                        </div>-->
+                    </div>
+
+                </div>
+            </div>
+            #else
+            <div class="col col-3"></div>
+            #end if
+        </div>
+
+        <!-- GRAPHS -->
+
+        <div class="row gutters row-gutters">
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.temperatures</h4>-->
+                <a data-fancybox="gallery" href="monthtempdew.png"><img src="monthtempdew.png" alt="$Extras.Translation.temperatures"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.wind_chill & $Extras.Translation.heat_index</h4>-->
+                <a data-fancybox="gallery" href="monthtempchill.png"><img src="monthtempchill.png" alt="$Extras.Translation.wind_chill & $Extras.Translation.heat_index"></a>
+            </div>
+        </div>
+
+        <div class="row gutters row-gutters">
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.barometer</h4>-->
+                <a data-fancybox="gallery" href="monthbarometer.png"><img src="monthbarometer.png" alt="$Extras.Translation.barometer"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.rain</h4>-->
+                <a data-fancybox="gallery" href="monthrain.png"><img src="monthrain.png" alt="$Extras.Translation.rain"></a>
+            </div>
+        </div>
+
+        <div class="row gutters row-gutters">
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.wind</h4>-->
+                <a data-fancybox="gallery" href="monthwind.png"><img src="monthwind.png" alt="$Extras.Translation.wind"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.wind_dir</h4>-->
+                <a data-fancybox="gallery" href="monthwinddir.png"><img src="monthwinddir.png" alt="$Extras.Translation.wind_dir"></a>
+            </div>
+        </div>
+
+        <div class="row gutters row-gutters">
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.wind_vector</h4>-->
+                <a data-fancybox="gallery" href="monthwindvec.png"><img src="monthwindvec.png" alt="$Extras.Translation.wind_vector"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.out_humidity</h4>-->
+                <a data-fancybox="gallery" href="monthhumidity.png"><img src="monthhumidity.png" alt="$Extras.Translation.out_humidity"></a>
+            </div>
+        </div>
+
+        #if $month.radiation.has_data or $month.UV.has_data
+        <div class="row gutters row-gutters">
+            #if $month.radiation.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.radiation</h4>-->
+                <a data-fancybox="gallery" href="monthradiation.png"><img src="monthradiation.png" alt="$Extras.Translation.radiation"></a>
+            </div>
+            #end if
+            #if $month.UV.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.uv</h4>-->
+                <a data-fancybox="gallery" href="monthuv.png"><img src="monthuv.png" alt="$Extras.Translation.uv"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+        #if $month.luminosity.has_data or $month('aqi_binding').aqi_pm2_5.has_data
+        <div class="row gutters row-gutters">
+            #if $month.luminosity.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.luminosity</h4>-->
+                <a data-fancybox="gallery" href="monthlum.png"><img src="monthlum.png" alt="$Extras.Translation.luminosity"></a>
+            </div>
+            #end if
+            #if $month('aqi_binding').aqi_pm2_5.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>AQI</h4>-->
+                <a data-fancybox="gallery" href="monthaqi.png"><img src="monthaqi.png" alt="AQI"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+        #if $month.rxCheckPercent.has_data or $month.extraTemp1.has_data
+        <div class="row gutters row-gutters">
+            #if $month.rxCheckPercent.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.rxcheck</h4>-->
+                <a data-fancybox="gallery" href="monthrx.png"><img src="monthrx.png" alt="$Extras.Translation.rxcheck"></a>
+            </div>
+            #end if
+            #if $month.extraTemp1.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.extratemp</h4>-->
+                <a data-fancybox="gallery" href="monthpond.png"><img src="monthpond.png" alt="$Extras.Translation.extratemp"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+    </div>
+</main>
+
+<footer>
+    <div class="container">
+        <center>
+        <p><a href="station.html">STATION INFO</a>
+            &bull; <a target="_blank" href="data.json">JSON</a>
+            <br />&copy; $current.dateTime.format("%Y") Andrew Billits / Griffin Park Weather
+        </p>
+        </center>
+    </div>
+</footer>
+
+<div style="display: none;">
+    <div id="data_loading"><i class="loading wi wi-thermometer"></i></div>
+</div>
+
+<!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
+<script src="main.min.js"></script>
+<script type="text/javascript">
+var tid = setInterval(newDataCheck, 5000);
+var currentDataStamp = $current.dateTime.raw;
+function newDataCheck() {
+  $.getJSON("data.json", function(json) {
+      //console.log(json); // this will show the info it in firebug console
+      //alert(json["last-updated"]);
+      if (json["last-updated"] > currentDataStamp) {
+        //reload page
+        location.reload(true);
+      } else {
+        //update live data
+      }
+  });
+}
+function abortTimer() { // to be called when you want to stop the timer
+  clearInterval(tid);
+}
+</script>
+</body>
+</html>
