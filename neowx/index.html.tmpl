@@ -579,10 +579,7 @@
 
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js?hcode=be5162d915534272a57d0bb781d27f2b"></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js?hcode=be5162d915534272a57d0bb781d27f2b"></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-exports.min.js?hcode=be5162d915534272a57d0bb781d27f2b"></script>
-<script src="https://cdn.anychart.com/releases/v8/js/anychart-circular-gauge.min.js?hcode=be5162d915534272a57d0bb781d27f2b"></script>
+<script src="anychart.min.js"></script>
   <script type="text/javascript">
   var tid = setInterval(newDataCheck, 5000);
   var currentDataStamp = $current.dateTime.raw;
@@ -601,8 +598,6 @@
   function abortTimer() { // to be called when you want to stop the timer
     clearInterval(tid);
   }
-
-  anychart.licenseKey("idtstudios.com-ee25d379-49cd1507");
   anychart.onDocumentReady(function () {
     var gauge = anychart.gauges.circular();
     gauge.fill('#fff')
