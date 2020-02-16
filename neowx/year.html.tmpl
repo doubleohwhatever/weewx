@@ -454,8 +454,8 @@
 
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
-                <!--<h4>$Extras.Translation.wind_vector</h4>-->
-                <a data-fancybox="gallery" href="yearwindvec.png"><img src="yearwindvec.png" alt="$Extras.Translation.wind_vector"></a>
+                <!--<h4>$Extras.Translation.soil_moisture</h4>-->
+                <a data-fancybox="gallery" href="yearsoilmoist.png"><img src="yearsoilmoist.png" alt="$Extras.Translation.soil_moisture"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.out_humidity</h4>-->
@@ -480,18 +480,27 @@
         </div>
         #end if
 
-        #if $year.luminosity.has_data or $year('aqi_binding').aqi_pm2_5.has_data
+        #if $year('aqi_binding').aqi_pm2_5.has_data
+        <div class="row gutters row-gutters">
+            #if $year('aqi_binding').aqi_pm2_5.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>PM</h4>-->
+                <a data-fancybox="gallery" href="yearpurpleair.png"><img src="yearpurpleair.png" alt="PM"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>AQI</h4>-->
+                <a data-fancybox="gallery" href="yearaqi.png"><img src="yearaqi.png" alt="AQI"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+        #if $year.luminosity.has_data
         <div class="row gutters row-gutters">
             #if $year.luminosity.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.luminosity</h4>-->
                 <a data-fancybox="gallery" href="yearlum.png"><img src="yearlum.png" alt="$Extras.Translation.luminosity"></a>
-            </div>
-            #end if
-            #if $year('aqi_binding').aqi_pm2_5.has_data
-            <div class="col col-6 crd graph-crd">
-                <!--<h4>AQI</h4>-->
-                <a data-fancybox="gallery" href="yearaqi.png"><img src="yearaqi.png" alt="AQI"></a>
             </div>
             #end if
         </div>
@@ -535,21 +544,16 @@
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
 <script type="text/javascript">
-var tid = setInterval(newDataCheck, 5000);
+var tid = setInterval(newDataCheck, 15000);
 var currentDataStamp = $current.dateTime.raw;
 function newDataCheck() {
   $.getJSON("data.json", function(json) {
-      //console.log(json); // this will show the info it in firebug console
-      //alert(json["last-updated"]);
       if (json["last-updated"] > currentDataStamp) {
-        //reload page
         location.reload(true);
-      } else {
-        //update live data
       }
   });
 }
-function abortTimer() { // to be called when you want to stop the timer
+function abortTimer() {
   clearInterval(tid);
 }
 </script>

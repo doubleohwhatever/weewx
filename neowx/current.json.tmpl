@@ -1,0 +1,131 @@
+{
+    "last-updated" : "$current.dateTime.raw",
+    "current.dateTime" : "$current.dateTime.format("%m/%d/%Y %I:%M %p")",
+    ## Extended almanac information is available. Do the full set of tables.
+    #set $sun_altitude = $almanac.sun.alt
+      #if $sun_altitude < 0
+        #set $sun_None="(Always down)"
+        #set $daylight_str = "00:00"
+      #else
+        #set $sun_None="(Always up)"
+        #set $daylight_str = "24:00"
+      #end if
+      #set $sunrise_ts = $almanac.sun.rise.raw
+      #set $sunset_ts = $almanac.sun.set.raw
+      #if $sunrise_ts and $sunset_ts
+        #set $daylight_s = $sunset_ts - $sunrise_ts
+        #set $daylight_hours = int($daylight_s / 3600)
+        #set $daylight_minutes = int(($daylight_s % 3600) / 60)
+        #set $daylight_str = "%02d:%02d" % ($daylight_hours, $daylight_minutes)
+      #end if
+    "almanac.sun.rise" : "$almanac.sun.rise.string($sun_None)",
+    "almanac.moon.rise" : "$almanac.moon.rise",
+    "almanac.sun.set" : "$almanac.sun.set.string($sun_None)",
+    "almanac.moon.set" : "$almanac.moon.set",
+    #if $almanac.moon_phase == "New"
+    "almanac.moon_phase" : "<i class='wi wi-moon-new'></i>",
+    #else if $almanac.moon_phase == "Waxing crescent"
+    "almanac.moon_phase" : "<i class='wi wi-moon-waxing-crescent-4'></i>",
+    #else if $almanac.moon_phase == "First quarter"
+    "almanac.moon_phase" : "<i class='wi wi-moon-first-quarter'></i>",
+    #else if $almanac.moon_phase == "Waxing gibbous"
+    "almanac.moon_phase" : "<i class='wi wi-moon-waxing-gibbous-4'></i>",
+    #else if $almanac.moon_phase == "Full"
+    "almanac.moon_phase" : "<i class='wi wi-moon-full'></i>",
+    #else if $almanac.moon_phase == "Waning gibbous"
+    "almanac.moon_phase" : "<i class='wi wi-moon-waning-gibbous-4'></i>",
+    #else if $almanac.moon_phase == "Last quarter"
+    "almanac.moon_phase" : "<i class='wi wi-moon-third-quarter'></i>",
+    #else if $almanac.moon_phase == "Waning crescent"
+    "almanac.moon_phase" : "<i class='wi wi-moon-waning-crescent-4'></i>",
+    #else
+    "almanac.moon_phase" : "<i class='wi wi-moon-waning-crescent-3'></i>",
+    #end if
+    "almanac.moon_fullness" : "$almanac.moon_fullness% FULL",
+    "current.windSpeed" : "$current.windSpeed.format(format_string='%.1f',add_label=False)",
+    "current.windDir" : "$current.windDir.format(add_label=False)",
+    "hour.windDir.avg" : "$hour.windDir.avg.format(add_label=False)",
+    "day.wind.avg" : "$day.wind.avg.format(format_string='%.1f',add_label=False)",
+    "day.wind.rms" : "$day.wind.rms.format(format_string='%.1f',add_label=False)",
+    "day.wind.max" : "$day.wind.max.format(format_string='%.1f')",
+    "day.wind.maxtime" : "($day.wind.maxtime.format('%H:%M'))",
+    "current.outTemp" : "$current.outTemp",
+    "day.outTemp.max" : "$day.outTemp.max",
+    "day.outTemp.maxtime" : "($day.outTemp.maxtime.format('%H:%M'))",
+    "day.outTemp.min" : "$day.outTemp.min",
+    "day.outTemp.mintime" : "($day.outTemp.mintime.format('%H:%M'))",
+    "current.outHumidity" : "$current.outHumidity",
+    "day.outHumidity.max" : "$day.outHumidity.max",
+    "day.outHumidity.maxtime" : "($day.outHumidity.maxtime.format('%H:%M'))",
+    "day.outHumidity.min" : "$day.outHumidity.min",
+    "day.outHumidity.mintime" : "($day.outHumidity.mintime.format('%H:%M'))",
+    #if $trend.barometer.has_data
+      #if $trend.barometer.raw < 0
+    "current.barometer" : "$current.barometer (<span style='color:#D35D4E'>$trend.barometer.formatted</span>)",
+      #else if $trend.barometer.raw > 0
+    "current.barometer" : "$current.barometer (<span style='color:#01A4B4'>$trend.barometer.formatted</span>)",
+      #else if $trend.barometer.raw == 0
+    "current.barometer" : "$current.barometer (<span>$trend.barometer.formatted</span>)",
+      #else
+    "current.barometer" : "$current.barometer (<span>$trend.barometer.formatted</span>)",
+      #end if
+    #else
+    "current.barometer" : "$current.barometer (<span>$trend.barometer.formatted</span>)",
+    #end if
+    "day.barometer.max" : "$day.barometer.max",
+    "day.barometer.maxtime" : "($day.barometer.maxtime.format('%H:%M'))",
+    "day.barometer.min" : "$day.barometer.min",
+    "day.barometer.mintime" : "($day.barometer.mintime.format('%H:%M'))",
+    "day.rain.sum" : "$day.rain.sum",
+    "current.rainRate" : "$current.rainRate",
+    "day.rainRate.max" : "$day.rainRate.max",
+    "day.rainRate.maxtime" : "($day.rainRate.maxtime.format('%H:%M'))",
+    #if $latest('aqi_binding').aqi_pm2_5.raw >= 1 and $latest('aqi_binding').aqi_pm2_5.raw <= 50
+    "aqi_pm2_5" : "<span style='color: #90b12a;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else if $latest('aqi_binding').aqi_pm2_5.raw >= 51 and $latest('aqi_binding').aqi_pm2_5.raw <= 100
+    "aqi_pm2_5" : "<span style='color: #C1B01E;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else if $latest('aqi_binding').aqi_pm2_5.raw >= 101 and $latest('aqi_binding').aqi_pm2_5.raw <= 150
+    "aqi_pm2_5" : "<span style='color: #E6A141;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else if $latest('aqi_binding').aqi_pm2_5.raw >= 151 and $latest('aqi_binding').aqi_pm2_5.raw <= 200
+    "aqi_pm2_5" : "<span style='color: #D35D4E;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else if $latest('aqi_binding').aqi_pm2_5.raw >= 201 and $latest('aqi_binding').aqi_pm2_5.raw <= 300
+    "aqi_pm2_5" : "<span style='color: #A475CB;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else if $latest('aqi_binding').aqi_pm2_5.raw >= 301
+    "aqi_pm2_5" : "<span style='color: #F5C0F2;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #else
+    "aqi_pm2_5" : "<span style='color: #80919A;'>$latest('aqi_binding').aqi_pm2_5.formatted</span>",
+    #end if
+    "aqi_pm2_5.max" : "$day('aqi_binding').aqi_pm2_5.max.formatted",
+    "aqi_pm2_5.maxtime" : "($day('aqi_binding').aqi_pm2_5.maxtime.format('%H:%M'))",
+    "aqi_pm2_5.min" : "$day('aqi_binding').aqi_pm2_5.min",
+    "aqi_pm2_5.mintime" : "($day('aqi_binding').aqi_pm2_5.mintime.format('%H:%M'))",
+    "current.dewpoint" : "$current.dewpoint",
+    "day.dewpoint.max" : "$day.dewpoint.max",
+    "day.dewpoint.maxtime" : "($day.dewpoint.maxtime.format('%H:%M'))",
+    "day.dewpoint.min" : "$day.dewpoint.min",
+    "day.dewpoint.mintime" : "($day.dewpoint.mintime.format('%H:%M'))",
+    "current.windchill" : "$current.windchill",
+    "day.windchill.min" : "$day.windchill.min",
+    "day.windchill.mintime" : "($day.windchill.mintime.format('%H:%M'))",
+    "current.heatindex" : "$current.heatindex",
+    "day.heatindex.max" : "$day.heatindex.max",
+    "day.heatindex.maxtime" : "($day.heatindex.maxtime.format('%H:%M'))",
+    "current.radiation" : "$current.radiation",
+    "day.radiation.max" : "$day.radiation.max",
+    "day.radiation.maxtime" : "($day.radiation.maxtime.format('%H:%M'))",
+    #if $current.UV.raw <= 0.5
+    "current.UV" : "<span style='color: #80919A;'>$current.UV</span>",
+    #else if $current.UV.raw >= 0.0 and $current.UV.raw <= 2.4
+    "current.UV" : "<span style='color: #90b12a;'>$current.UV</span>",
+    #else if $current.UV.raw >= 2.5 and $current.UV.raw <= 5.4
+    "current.UV" : "<span style='color: #C1B01E;'>$current.UV</span>",
+    #else if $current.UV.raw >= 5.5 and $current.UV.raw <= 7.4
+    "current.UV" : "<span style='color: #E6A141;'>$current.UV</span>",
+    #else if $current.UV.raw >= 7.5 and $current.UV.raw <= 10.4
+    "current.UV" : "<span style='color: #D35D4E;'>$current.UV</span>",
+    #else if $current.UV.raw > 10.5
+    "current.UV" : "<span style='color: #A475CB;'>$current.UV</span>",
+    #end if
+    "day.UV.max" : "$day.UV.max",
+    "day.UV.maxtime" : "($day.UV.maxtime.format('%H:%M'))"
+}

@@ -453,8 +453,8 @@
 
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
-                <!--<h4>$Extras.Translation.wind_vector</h4>-->
-                <a data-fancybox="gallery" href="weekwindvec.png"><img src="weekwindvec.png" alt="$Extras.Translation.wind_vector"></a>
+                <!--<h4>$Extras.Translation.soil_moisture</h4>-->
+                <a data-fancybox="gallery" href="weeksoilmoist.png"><img src="weeksoilmoist.png" alt="$Extras.Translation.soil_moisture"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.out_humidity</h4>-->
@@ -479,18 +479,27 @@
         </div>
         #end if
 
-        #if $week.luminosity.has_data or $week('aqi_binding').aqi_pm2_5.has_data
+        #if $week('aqi_binding').aqi_pm2_5.has_data
+        <div class="row gutters row-gutters">
+            #if $week('aqi_binding').aqi_pm2_5.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>PM</h4>-->
+                <a data-fancybox="gallery" href="weekpurpleair.png"><img src="weekpurpleair.png" alt="PM"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>AQI</h4>-->
+                <a data-fancybox="gallery" href="weekaqi.png"><img src="weekaqi.png" alt="AQI"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+        #if $week.luminosity.has_data
         <div class="row gutters row-gutters">
             #if $week.luminosity.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.luminosity</h4>-->
-                <a data-fancybox="gallery" href="weeklum.png"><img src="monthlum.png" alt="$Extras.Translation.luminosity"></a>
-            </div>
-            #end if
-            #if $week('aqi_binding').aqi_pm2_5.has_data
-            <div class="col col-6 crd graph-crd">
-                <!--<h4>AQI</h4>-->
-                <a data-fancybox="gallery" href="weekaqi.png"><img src="weekaqi.png" alt="AQI"></a>
+                <a data-fancybox="gallery" href="weeklum.png"><img src="weeklum.png" alt="$Extras.Translation.luminosity"></a>
             </div>
             #end if
         </div>
@@ -534,21 +543,16 @@
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
 <script type="text/javascript">
-var tid = setInterval(newDataCheck, 5000);
+var tid = setInterval(newDataCheck, 15000);
 var currentDataStamp = $current.dateTime.raw;
 function newDataCheck() {
   $.getJSON("data.json", function(json) {
-      //console.log(json); // this will show the info it in firebug console
-      //alert(json["last-updated"]);
       if (json["last-updated"] > currentDataStamp) {
-        //reload page
         location.reload(true);
-      } else {
-        //update live data
       }
   });
 }
-function abortTimer() { // to be called when you want to stop the timer
+function abortTimer() {
   clearInterval(tid);
 }
 </script>

@@ -208,21 +208,16 @@
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
 <script type="text/javascript">
-var tid = setInterval(newDataCheck, 5000);
+var tid = setInterval(newDataCheck, 15000);
 var currentDataStamp = $current.dateTime.raw;
 function newDataCheck() {
   $.getJSON("data.json", function(json) {
-      //console.log(json); // this will show the info it in firebug console
-      //alert(json["last-updated"]);
       if (json["last-updated"] > currentDataStamp) {
-        //reload page
         location.reload(true);
-      } else {
-        //update live data
       }
   });
 }
-function abortTimer() { // to be called when you want to stop the timer
+function abortTimer() {
   clearInterval(tid);
 }
 </script>

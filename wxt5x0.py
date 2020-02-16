@@ -67,7 +67,9 @@ import weewx.wxformulas
 import schemas.wview
 
 #custom_schema = schemas.wview.schema + [('luminosity', 'REAL')] + [('precipitationType', 'REAL')] + [('rain2', 'REAL')] + [('rainRate2', 'REAL')]
-custom_schema = schemas.wview.schema + [('luminosity', 'REAL')] + [('precipitationType', 'REAL')]
+#custom_schema = schemas.wview.schema + [('luminosity', 'REAL')] + [('precipitationType', 'REAL')]
+custom_schema = schemas.wview.schema + [('luminosity', 'REAL')]
+
 
 # set up appropriate units
 weewx.units.USUnits['group_luminosity'] = 'klux'
@@ -151,6 +153,9 @@ class Station(object):
     def send_cmd(self, cmd):
         cmd = "%d%s%s" % (self.address, cmd, self.terminator)
         self.device.write(cmd)
+    def send_cmd2(self, cmd):
+        cmd = "%s%s" % (cmd, self.terminator)
+        self.device2.write(cmd)
 
     def get_data(self, cmd):
 #        if self.crc_prefix:
@@ -161,6 +166,35 @@ class Station(object):
         if line:
             line.replace('\x00', '') # eliminate any NULL characters
         return line
+    def get_custom_data(self):
+#        if self.crc_prefix:
+#            cmd = cmd.replace('R', 'r')
+#            cmd = "%sxxx" % self.crc_prefix
+        #self.device2.flushOutput()
+        self.send_cmd2('GET')
+        line = self.device2.readline()
+        if line:
+            line.replace('\x00', '') # eliminate any NULL characters
+        return line
+    def parse_custom_data(self, raw):
+        # 0R0,Dn=000#,Dm=106#,Dx=182#,Sn=1.1#,Sm=4.0#,Sx=6.6#,Ta=16.0C,Ua=50.0P,Pa=1018.1H,Rc=0.00M,Rd=0s,Ri=0.0M,Hc=0.0M,Hd=0s,Hi=0.0M,Rp=0.0M,Hp=0.0M,Th=15.6C,Vh=0.0N,Vs=15.2V,Vr=3.498V,Id=Ant
+        parsed = dict()
+        for part in raw.strip().split(','):
+            if '=' in part:
+                try:
+                    tmp_var, tmp_val = part.split('=')
+                except:
+                    return 'error'
+                variable = None
+                value = None
+                try:
+                    variable = tmp_var
+                    value = float(tmp_val[:-1])
+                except ValueError, e:
+                    #logerr("parse failed for %s (%s):%s" % (abbr, vstr, e))
+                    return 'error'
+                parsed[variable] = value
+        return parsed
 
     def get_address(self):
         self.device.write('?%s' % self.terminator)
@@ -350,25 +384,29 @@ class Station(object):
 
 
 class StationSerial(Station):
-    # ASCII over RS232, RS485, and RS422 defaults to 19200, 8, N, 1
-    DEFAULT_BAUD = 19200
+    # ASCII over RS232, RS485, and RS422 defaults to 115200, 8, N, 1
+    DEFAULT_BAUD = 115200
 
     def __init__(self, address, port, baud=DEFAULT_BAUD):
         super(StationSerial, self).__init__(address, port, baud)
         self.terminator = '\r\n'
         self.device = None
+        self.device2 = None
 
     def open(self):
         import serial
         logdbg("open serial port %s" % self.port)
-        self.device = serial.Serial(
-            self.port, self.baudrate, timeout=self.timeout)
+        #self.device = serial.Serial(self.port, self.baudrate, timeout=self.timeout)
+        self.device = serial.Serial('/dev/ttyUSB0', self.baudrate, timeout=self.timeout)
+        self.device2 = serial.Serial('/dev/ttyUSB1', 115200, timeout=self.timeout)
 
     def close(self):
         if self.device is not None:
             logdbg("close serial port %s" % self.port)
             self.device.close()
             self.device = None
+            self.device2.close()
+            self.device2 = None
 
 
 class StationNMEA(Station):
@@ -433,7 +471,7 @@ class WXT5x0Driver(weewx.drivers.AbstractDevice):
         'nmea': StationNMEA,
         'serial': StationSerial,
     }
-    DEFAULT_PORT = '/dev/ttyUSB1'
+    DEFAULT_PORT = '/dev/ttyUSB0'
 
     # map sensor names to schema names
     DEFAULT_MAP = {
@@ -495,6 +533,18 @@ class WXT5x0Driver(weewx.drivers.AbstractDevice):
                     logdbg("parsed: %s" % data)
                     packet = self._data_to_packet(data)
                     logdbg("mapped: %s" % packet)
+                    #####################################
+                    #Custom data injection
+                    custom_data = self._station.get_custom_data().strip()
+                    custom_data_parsed = self._station.parse_custom_data(custom_data)
+                    if 'UV' in custom_data_parsed:
+                        packet['UV'] = custom_data_parsed['UV']
+                    if 'LX' in custom_data_parsed:
+                        packet['luminosity'] = custom_data_parsed['LX']
+                    if 'SR' in custom_data_parsed:
+                        packet['radiation'] = custom_data_parsed['SR']
+                    """
+                    #Old code. leaving just in case...
                     try:
                         packet['radiation'] = float(subprocess.check_output(['/root/WS_UMB_SIMPLE_SINGLE.py','2','7','900']).rstrip()) #DEVICE-ID:2 CLASS:7 CHANNEL:900 (W/m2 act) - From Lufft WS10
                     except:
@@ -511,9 +561,12 @@ class WXT5x0Driver(weewx.drivers.AbstractDevice):
                         packet['precipitationType'] = float(subprocess.check_output(['/root/WS_UMB_SIMPLE_SINGLE.py','2','7','700']).rstrip()) #DEVICE-ID:2 CLASS:7 CHANNEL:700 (type act) - From Lufft WS10
                     except:
                         pass
+                    """
+                    #####################################
                     if packet:
                         packet['dateTime'] = int(time.time() + 0.5)
                         packet['usUnits'] = weewx.METRICWX
+                        #loginf(packet)
                         yield packet
                     break
                 except IOError, e:
@@ -562,7 +615,7 @@ class WXT5x0Driver(weewx.drivers.AbstractDevice):
 # define a main entry point for basic testing of the station without weewx
 # engine and service overhead.  invoke this as follows from the weewx root dir:
 #
-# PYTHONPATH=/usr/share/weewx python /usr/share/weewx/user/wxt5x0.py --port /dev/ttyUSB1 --baud 19200
+# PYTHONPATH=/usr/share/weewx python /usr/share/weewx/user/wxt5x0.py --port /dev/ttyUSB0 --baud 115200
 
 if __name__ == '__main__':
     import optparse
@@ -580,7 +633,7 @@ if __name__ == '__main__':
                       help='serial port to which the station is connected',
                       default=WXT5x0Driver.DEFAULT_PORT)
     parser.add_option('--baud', type=int,
-                      help='baud rate', default=19200)
+                      help='baud rate', default=115200)
     parser.add_option('--address', type=int,
                       help='device address', default=0)
     parser.add_option('--poll-interval', metavar='POLL', type=int,
@@ -640,3 +693,12 @@ if __name__ == '__main__':
                 print parsed
                 #print data
                 time.sleep(options.poll_interval)
+                """
+                data = s.get_custom_data().strip()
+                print int(time.time()), data
+                parsed = s.parse_custom_data(data)
+                print parsed
+                #print parsed['UV']
+                #print data
+                time.sleep(options.poll_interval)
+                """

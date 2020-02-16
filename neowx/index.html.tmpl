@@ -45,7 +45,7 @@
         <div class="title">
         <a href="index.html" style="text-decoration: none;">
             <h2>$station.location</h2>
-            <h3>$current.dateTime.format("%m/%d/%Y %I:%M %p")</h3>
+            <h3 id="current.dateTime">$current.dateTime.format("%m/%d/%Y %I:%M %p")</h3>
         </a>
         </div>
 
@@ -72,20 +72,20 @@
         <table class="unstyled almanac">
             <tr>
                 <td style="text-align: center;"><i class="wi wi-sunrise"></i></td>
-                <td>$almanac.sun.rise.string($sun_None)</td>
+                <td id="almanac.sun.rise">$almanac.sun.rise.string($sun_None)</td>
                 <td style="text-align: center;"><i class="wi wi-moonrise"></i></td>
-                <td>$almanac.moon.rise</td>
+                <td id="almanac.moon.rise">$almanac.moon.rise</td>
             </tr>
             <tr>
                 <td style="text-align: center;"><i class="wi wi-sunset"></i></td>
-                <td>$almanac.sun.set.string($sun_None)</td>
+                <td id="almanac.sun.set">$almanac.sun.set.string($sun_None)</td>
                 <td style="text-align: center;"><i class="wi wi-moonset"></i></td>
-                <td>$almanac.moon.set</td>
+                <td id="almanac.moon.set">$almanac.moon.set</td>
             </tr>
             <tr>
                 <td style="text-align: center;"><i class="wi wi-day-sunny"></i></td>
                 <td>$daylight_str OF SUN<!--$Extras.Translation.more_button--></td>
-                <td style="text-align: center;">
+                <td style="text-align: center;" id="almanac.moon_phase">
                     #if $almanac.moon_phase == "New"
                     <i class="wi wi-moon-new"></i>
                     #else if $almanac.moon_phase == "Waxing crescent"
@@ -106,7 +106,7 @@
                     <i class="wi wi-moon-waning-crescent-3"></i>
                     #end if
                 </td>
-                <td>$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
+                <td id="almanac.moon_fullness">$almanac.moon_fullness% FULL<!--$Extras.Translation.moon_full--></td>
             </tr>
         </table>
         </a>
@@ -184,8 +184,8 @@
                       </tr>-->
                       <tr>
                           <td>$Extras.Translation.high:</td>
-                          <td>$day.wind.max<!--<br> $day.wind.gustdir <i class="wi wi-wind from-$day.wind.gustdir.formatted-deg"></i>--></td>
-                          <td>($day.wind.maxtime.format("%H:%M"))</td>
+                          <td id="day.wind.max">$day.wind.max.format(format_string='%.1f')<!--<br> $day.wind.gustdir <i class="wi wi-wind from-$day.wind.gustdir.formatted-deg"></i>--></td>
+                          <td id="day.wind.maxtime">($day.wind.maxtime.format("%H:%M"))</td>
                       </tr>
                       <!--<tr>
                           <td>$Extras.Translation.wind_rms:</td>
@@ -209,17 +209,17 @@
                         <h4><i class="wi wi-thermometer"></i> $Extras.Translation.out_temp</h4>
 
                         <div class="crd-content">
-                            <span class="weatherdata">$current.outTemp</span>
+                            <span class="weatherdata" id="current.outTemp">$current.outTemp</span>
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.high:</td>
-                                    <td>$day.outTemp.max</td>
-                                    <td>($day.outTemp.maxtime.format("%H:%M"))</td>
+                                    <td id="day.outTemp.max">$day.outTemp.max</td>
+                                    <td id="day.outTemp.maxtime">($day.outTemp.maxtime.format("%H:%M"))</td>
                                 </tr>
                                 <tr>
                                     <td>$Extras.Translation.low:</td>
-                                    <td>$day.outTemp.min</td>
-                                    <td>($day.outTemp.mintime.format("%H:%M"))</td>
+                                    <td id="day.outTemp.min">$day.outTemp.min</td>
+                                    <td id="day.outTemp.mintime">($day.outTemp.mintime.format("%H:%M"))</td>
                                 </tr>
                             </table>
                         </div>
@@ -229,17 +229,17 @@
 
                         <h4><i class="wi wi-humidity"></i> $Extras.Translation.out_humidity</h4>
                         <div class="crd-content">
-                            <span class="weatherdata">$current.outHumidity</span>
+                            <span class="weatherdata" id="current.outHumidity">$current.outHumidity</span>
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.high:</td>
-                                    <td>$day.outHumidity.max</td>
-                                    <td>($day.outHumidity.maxtime.format("%H:%M"))</td>
+                                    <td id="day.outHumidity.max">$day.outHumidity.max</td>
+                                    <td id="day.outHumidity.maxtime">($day.outHumidity.maxtime.format("%H:%M"))</td>
                                 </tr>
                                 <tr>
                                     <td>$Extras.Translation.low:</td>
-                                    <td>$day.outHumidity.min</td>
-                                    <td>($day.outHumidity.mintime.format("%H:%M"))</td>
+                                    <td id="day.outHumidity.min">$day.outHumidity.min</td>
+                                    <td id="day.outHumidity.mintime">($day.outHumidity.mintime.format("%H:%M"))</td>
                                 </tr>
                             </table>
                         </div>
@@ -251,27 +251,27 @@
                         <div class="crd-content">
                           #if $trend.barometer.has_data
                             #if $trend.barometer.raw < 0
-                              <span class="weatherdata">$current.barometer (<span style="color:#D35D4E">$trend.barometer.formatted</span>)</span>
+                              <span class="weatherdata" id="current.barometer">$current.barometer (<span style="color:#D35D4E">$trend.barometer.formatted</span>)</span>
                             #else if $trend.barometer.raw > 0
-                              <span class="weatherdata">$current.barometer (<span style="color:#01A4B4">$trend.barometer.formatted</span>)</span>
+                              <span class="weatherdata" id="current.barometer">$current.barometer (<span style="color:#01A4B4">$trend.barometer.formatted</span>)</span>
                             #else if $trend.barometer.raw == 0
-                              <span class="weatherdata">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
+                              <span class="weatherdata" id="current.barometer">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
                             #else
-                              <span class="weatherdata">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
+                              <span class="weatherdata" id="current.barometer">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
                             #end if
                           #else
-                            <span class="weatherdata">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
+                            <span class="weatherdata" id="current.barometer">$current.barometer (<span>$trend.barometer.formatted</span>)</span>
                           #end if
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.high:</td>
-                                    <td style="white-space: nowrap;">$day.barometer.max</td>
-                                    <td>($day.barometer.maxtime.format("%H:%M"))</td>
+                                    <td style="white-space: nowrap;" id="day.barometer.max">$day.barometer.max</td>
+                                    <td id="day.barometer.maxtime">($day.barometer.maxtime.format("%H:%M"))</td>
                                 </tr>
                                 <tr>
                                     <td>$Extras.Translation.low:</td>
-                                    <td style="white-space: nowrap;">$day.barometer.min</td>
-                                    <td>($day.barometer.mintime.format("%H:%M"))</td>
+                                    <td style="white-space: nowrap;" id="day.barometer.min">$day.barometer.min</td>
+                                    <td id="day.barometer.mintime">($day.barometer.mintime.format("%H:%M"))</td>
                                 </tr>
                                 <!--
                                 <tr>
@@ -291,17 +291,17 @@
 
                         <h4><i class="wi wi-umbrella"></i> $Extras.Translation.rain</h4>
                         <div class="crd-content">
-                            <span class="weatherdata">$day.rain.sum</span>
+                            <span class="weatherdata" id="day.rain.sum">$day.rain.sum</span>
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.rain_rate:</td>
-                                    <td>$current.rainRate</td>
+                                    <td id="current.rainRate">$current.rainRate</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td>Hi $Extras.Translation.rain_rate:</td>
-                                    <td>$day.rainRate.max</td>
-                                    <td>($day.rainRate.maxtime.format("%H:%M"))</td>
+                                    <td id="day.rainRate.max">$day.rainRate.max</td>
+                                    <td id="day.rainRate.maxtime">($day.rainRate.maxtime.format("%H:%M"))</td>
                                 </tr>
                             </table>
                         </div>
@@ -312,31 +312,31 @@
                         <h4><i class="wi wi-dust"></i> AQI</h4>
                         <div class="crd-content">
                             #if $latest('aqi_binding').aqi_pm2_5.raw >= 1 and $latest('aqi_binding').aqi_pm2_5.raw <= 50
-                            <span style="color: #90b12a;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #90b12a;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else if $latest('aqi_binding').aqi_pm2_5.raw >= 51 and $latest('aqi_binding').aqi_pm2_5.raw <= 100
-                            <span style="color: #C1B01E;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #C1B01E;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else if $latest('aqi_binding').aqi_pm2_5.raw >= 101 and $latest('aqi_binding').aqi_pm2_5.raw <= 150
-                            <span style="color: #E6A141;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #E6A141;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else if $latest('aqi_binding').aqi_pm2_5.raw >= 151 and $latest('aqi_binding').aqi_pm2_5.raw <= 200
-                            <span style="color: #D35D4E;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #D35D4E;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else if $latest('aqi_binding').aqi_pm2_5.raw >= 201 and $latest('aqi_binding').aqi_pm2_5.raw <= 300
-                            <span style="color: #A475CB;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #A475CB;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else if $latest('aqi_binding').aqi_pm2_5.raw >= 301
-                            <span style="color: #F5C0F2;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #F5C0F2;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #else
-                            <span style="color: #80919A;" class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>
+                            <span class="weatherdata" id="aqi_pm2_5"><span style="color: #80919A;">$latest('aqi_binding').aqi_pm2_5.formatted</span></span>
                             #end if
                             <!--<span class="weatherdata">$latest('aqi_binding').aqi_pm2_5.formatted</span>-->
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.high:</td>
-                                    <td>$day('aqi_binding').aqi_pm2_5.max.formatted</td>
-                                    <td>($day('aqi_binding').aqi_pm2_5.maxtime.format("%H:%M"))</td>
+                                    <td id="aqi_pm2_5.max">$day('aqi_binding').aqi_pm2_5.max.formatted</td>
+                                    <td id="aqi_pm2_5.maxtime">($day('aqi_binding').aqi_pm2_5.maxtime.format("%H:%M"))</td>
                                 </tr>
                                 <tr>
                                     <td>$Extras.Translation.low:</td>
-                                    <td>$day('aqi_binding').aqi_pm2_5.min</td>
-                                    <td>($day('aqi_binding').aqi_pm2_5.mintime.format("%H:%M"))</td>
+                                    <td id="aqi_pm2_5.min">$day('aqi_binding').aqi_pm2_5.min</td>
+                                    <td id="aqi_pm2_5.mintime">($day('aqi_binding').aqi_pm2_5.mintime.format("%H:%M"))</td>
                                 </tr>
                             </table>
                         </div>
@@ -346,17 +346,17 @@
 
                 <h4><i class="wi wi-thermometer-exterior"></i> $Extras.Translation.dewpoint</h4>
                 <div class="crd-content">
-                    <span class="weatherdata">$current.dewpoint</span>
+                    <span class="weatherdata" id="current.dewpoint">$current.dewpoint</span>
                     <table class="meta">
                         <tr>
                             <td>$Extras.Translation.high:</td>
-                            <td>$day.dewpoint.max</td>
-                            <td>($day.dewpoint.maxtime.format("%H:%M"))</td>
+                            <td id="day.dewpoint.max">$day.dewpoint.max</td>
+                            <td id="day.dewpoint.maxtime">($day.dewpoint.maxtime.format("%H:%M"))</td>
                         </tr>
                         <tr>
                             <td>$Extras.Translation.low:</td>
-                            <td>$day.dewpoint.min</td>
-                            <td>($day.dewpoint.mintime.format("%H:%M"))</td>
+                            <td id="day.dewpoint.min">$day.dewpoint.min</td>
+                            <td id="day.dewpoint.mintime">($day.dewpoint.mintime.format("%H:%M"))</td>
                         </tr>
                     </table>
                 </div>
@@ -372,12 +372,12 @@
 
                 <h4><i class="wi wi-windy"></i> $Extras.Translation.wind_chill</h4>
                 <div class="crd-content">
-                    <span class="weatherdata">$current.windchill</span>
+                    <span class="weatherdata" id="current.windchill">$current.windchill</span>
                     <table class="meta">
                         <tr>
                             <td>$Extras.Translation.low:</td>
-                            <td>$day.windchill.min</td>
-                            <td>($day.windchill.mintime.format("%H:%M"))</td>
+                            <td id="day.windchill.min">$day.windchill.min</td>
+                            <td id="day.windchill.mintime">($day.windchill.mintime.format("%H:%M"))</td>
                         </tr>
                     </table>
                 </div>
@@ -387,12 +387,12 @@
 
                 <h4><i class="wi wi-fire"></i> $Extras.Translation.heat_index</h4>
                 <div class="crd-content">
-                    <span class="weatherdata">$current.heatindex</span>
+                    <span class="weatherdata" id="current.heatindex">$current.heatindex</span>
                     <table class="meta">
                         <tr>
                             <td>$Extras.Translation.high:</td>
-                            <td>$day.heatindex.max</td>
-                            <td>($day.heatindex.maxtime.format("%H:%M"))</td>
+                            <td id="day.heatindex.max">$day.heatindex.max</td>
+                            <td id="day.heatindex.maxtime">($day.heatindex.maxtime.format("%H:%M"))</td>
                         </tr>
                     </table>
                 </div>
@@ -402,12 +402,12 @@
 
                         <h4><i class="wi wi-hot"></i> $Extras.Translation.radiation</h4>
                         <div class="crd-content">
-                            <span class="weatherdata">$current.radiation</span>
+                            <span class="weatherdata" id="current.radiation">$current.radiation</span>
                             <table class="meta">
                                 <tr>
                                     <td>$Extras.Translation.high:</td>
-                                    <td>$day.radiation.max</td>
-                                    <td>($day.radiation.maxtime.format("%H:%M"))</td>
+                                    <td id="day.radiation.max">$day.radiation.max</td>
+                                    <td id="day.radiation.maxtime">($day.radiation.maxtime.format("%H:%M"))</td>
                                 </tr>
                                 <!--<tr>
                                     <td>$Extras.Translation.low:</td>
@@ -425,29 +425,29 @@
                 <div class="crd-content">
                     #if $current.UV.raw <= 0.5
                     <!--<span style="color: #ffffff; background-color: #80919A" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #80919A;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #80919A;">$current.UV</span></span>
                     #else if $current.UV.raw >= 0.0 and $current.UV.raw <= 2.4
                     <!--<span style="color: #ffffff; background-color: #90b12a" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #90b12a;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #90b12a;">$current.UV</span></span>
                     #else if $current.UV.raw >= 2.5 and $current.UV.raw <= 5.4
                     <!--<span style="color: #ffffff; background-color: #C1B01E" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #C1B01E;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #C1B01E;">$current.UV</span></span>
                     #else if $current.UV.raw >= 5.5 and $current.UV.raw <= 7.4
                     <!--<span style="color: #ffffff; background-color: #E6A141" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #E6A141;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #E6A141;">$current.UV</span></span>
                     #else if $current.UV.raw >= 7.5 and $current.UV.raw <= 10.4
                     <!--<span style="color: #ffffff; background-color: #D35D4E" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #D35D4E;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #D35D4E;">$current.UV</span></span>
                     #else if $current.UV.raw > 10.5
                     <!--<span style="color: #ffffff; background-color: #A475CB" class="weatherdata">$current.UV</span>-->
-                    <span style="color: #A475CB;" class="weatherdata">$current.UV</span>
+                    <span class="weatherdata" id="current.UV"><span style="color: #A475CB;">$current.UV</span></span>
                     #end if
                     <!--<span class="weatherdata">$current.UV</span>-->
                     <table class="meta">
                         <tr>
                             <td>$Extras.Translation.high:</td>
-                            <td>$day.UV.max</td>
-                            <td>($day.UV.maxtime.format("%H:%M"))</td>
+                            <td id="day.UV.max">$day.UV.max</td>
+                            <td id="day.UV.maxtime">($day.UV.maxtime.format("%H:%M"))</td>
                         </tr>
                         <!--<tr>
                             <td>$Extras.Translation.low:</td>
@@ -467,44 +467,44 @@
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.temperatures</h4>-->
-                <a data-fancybox="gallery" href="daytempdew.png"><img src="daytempdew.png" alt="$Extras.Translation.temperatures"></a>
+                <a data-fancybox="gallery" href="daytempdew.png"><img src="daytempdew.png?time=$current.dateTime.raw" alt="$Extras.Translation.temperatures"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.wind_chill & $Extras.Translation.heat_index</h4>-->
-                <a data-fancybox="gallery" href="daytempchill.png"><img src="daytempchill.png" alt="$Extras.Translation.wind_chill & $Extras.Translation.heat_index"></a>
+                <a data-fancybox="gallery" href="daytempchill.png"><img src="daytempchill.png?time=$current.dateTime.raw" alt="$Extras.Translation.wind_chill & $Extras.Translation.heat_index"></a>
             </div>
         </div>
 
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.barometer</h4>-->
-                <a data-fancybox="gallery" href="daybarometer.png"><img src="daybarometer.png" alt="$Extras.Translation.barometer"></a>
+                <a data-fancybox="gallery" href="daybarometer.png"><img src="daybarometer.png?time=$current.dateTime.raw" alt="$Extras.Translation.barometer"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.rain</h4>-->
-                <a data-fancybox="gallery" href="dayrain.png"><img src="dayrain.png" alt="$Extras.Translation.rain"></a>
+                <a data-fancybox="gallery" href="dayrain.png"><img src="dayrain.png?time=$current.dateTime.raw" alt="$Extras.Translation.rain"></a>
             </div>
         </div>
 
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.wind</h4>-->
-                <a data-fancybox="gallery" href="daywind.png"><img src="daywind.png" alt="$Extras.Translation.wind"></a>
+                <a data-fancybox="gallery" href="daywind.png"><img src="daywind.png?time=$current.dateTime.raw" alt="$Extras.Translation.wind"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.wind_dir</h4>-->
-                <a data-fancybox="gallery" href="daywinddir.png"><img src="daywinddir.png" alt="$Extras.Translation.wind_dir"></a>
+                <a data-fancybox="gallery" href="daywinddir.png"><img src="daywinddir.png?time=$current.dateTime.raw" alt="$Extras.Translation.wind_dir"></a>
             </div>
         </div>
 
         <div class="row gutters row-gutters">
             <div class="col col-6 crd graph-crd">
-                <!--<h4>$Extras.Translation.wind_vector</h4>-->
-                <a data-fancybox="gallery" href="daywindvec.png"><img src="daywindvec.png" alt="$Extras.Translation.wind_vector"></a>
+                <!--<h4>$Extras.Translation.soil_moist</h4>-->
+                <a data-fancybox="gallery" href="daysoilmoist.png"><img src="daysoilmoist.png?time=$current.dateTime.raw" alt="$Extras.Translation.soil_moisture"></a>
             </div>
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.out_humidity</h4>-->
-                <a data-fancybox="gallery" href="dayhumidity.png"><img src="dayhumidity.png" alt="$Extras.Translation.out_humidity"></a>
+                <a data-fancybox="gallery" href="dayhumidity.png"><img src="dayhumidity.png?time=$current.dateTime.raw" alt="$Extras.Translation.out_humidity"></a>
             </div>
         </div>
 
@@ -513,30 +513,39 @@
             #if $day.radiation.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.radiation</h4>-->
-                <a data-fancybox="gallery" href="dayradiation.png"><img src="dayradiation.png" alt="$Extras.Translation.radiation"></a>
+                <a data-fancybox="gallery" href="dayradiation.png"><img src="dayradiation.png?time=$current.dateTime.raw" alt="$Extras.Translation.radiation"></a>
             </div>
             #end if
             #if $day.UV.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.uv</h4>-->
-                <a data-fancybox="gallery" href="dayuv.png"><img src="dayuv.png" alt="$Extras.Translation.uv"></a>
+                <a data-fancybox="gallery" href="dayuv.png"><img src="dayuv.png?time=$current.dateTime.raw" alt="$Extras.Translation.uv"></a>
             </div>
             #end if
         </div>
         #end if
 
-        #if $day.luminosity.has_data or $day('aqi_binding').aqi_pm2_5.has_data
+        #if $day('aqi_binding').aqi_pm2_5.has_data
         <div class="row gutters row-gutters">
-            #if $month.luminosity.has_data
-            <div class="col col-6 crd graph-crd">
-                <!--<h4>$Extras.Translation.luminosity</h4>-->
-                <a data-fancybox="gallery" href="daylum.png"><img src="daylum.png" alt="$Extras.Translation.luminosity"></a>
-            </div>
-            #end if
             #if $day('aqi_binding').aqi_pm2_5.has_data
             <div class="col col-6 crd graph-crd">
+                <!--<h4>PM</h4>-->
+                <a data-fancybox="gallery" href="daypurpleair.png"><img src="daypurpleair.png?time=$current.dateTime.raw" alt="PM"></a>
+            </div>
+            <div class="col col-6 crd graph-crd">
                 <!--<h4>AQI</h4>-->
-                <a data-fancybox="gallery" href="dayaqi.png"><img src="dayaqi.png" alt="AQI"></a>
+                <a data-fancybox="gallery" href="dayaqi.png"><img src="dayaqi.png?time=$current.dateTime.raw" alt="AQI"></a>
+            </div>
+            #end if
+        </div>
+        #end if
+
+        #if $day.luminosity.has_data
+        <div class="row gutters row-gutters">
+            #if $day.luminosity.has_data
+            <div class="col col-6 crd graph-crd">
+                <!--<h4>$Extras.Translation.luminosity</h4>-->
+                <a data-fancybox="gallery" href="daylum.png"><img src="daylum.png?time=$current.dateTime.raw" alt="$Extras.Translation.luminosity"></a>
             </div>
             #end if
         </div>
@@ -547,13 +556,13 @@
             #if $day.rxCheckPercent.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.rxcheck</h4>-->
-                <a data-fancybox="gallery" href="dayrx.png"><img src="dayrx.png" alt="$Extras.Translation.rxcheck"></a>
+                <a data-fancybox="gallery" href="dayrx.png"><img src="dayrx.png?time=$current.dateTime.raw" alt="$Extras.Translation.rxcheck"></a>
             </div>
             #end if
             #if $day.extraTemp1.has_data
             <div class="col col-6 crd graph-crd">
                 <!--<h4>$Extras.Translation.extratemp</h4>-->
-                <a data-fancybox="gallery" href="daypond.png"><img src="daypond.png" alt="$Extras.Translation.extratemp"></a>
+                <a data-fancybox="gallery" href="daypond.png"><img src="daypond.png?time=$current.dateTime.raw" alt="$Extras.Translation.extratemp"></a>
             </div>
             #end if
         </div>
@@ -580,206 +589,15 @@
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
 <script src="anychart.min.js"></script>
-  <script type="text/javascript">
-  var tid = setInterval(newDataCheck, 5000);
-  var currentDataStamp = $current.dateTime.raw;
-  function newDataCheck() {
-    $.getJSON("data.json", function(json) {
-        //console.log(json); // this will show the info it in firebug console
-        //alert(json["last-updated"]);
-        if (json["last-updated"] > currentDataStamp) {
-          //reload page
-          location.reload(true);
-        } else {
-          //update live data
-        }
-    });
-  }
-  function abortTimer() { // to be called when you want to stop the timer
-    clearInterval(tid);
-  }
-  anychart.onDocumentReady(function () {
-    var gauge = anychart.gauges.circular();
-    gauge.fill('#fff')
-            .stroke(null)
-            .padding(-8)
-            .margin(-4)
-            .startAngle(0)
-            .sweepAngle(360);
-
-  gauge.data([$current.windDir.format(add_label=False)]);
-
-    gauge.axis().labels()
-            .enabled(true)
-            .fontSize(8)
-            .padding(5)
-            .position("center-top")
-  			.anchor("left")
-  			.offsetY(-35)
-            .format(function () {
-                if (this.value == 0) return '';
-                if (this.value == 22.5) return 'NNE';
-                if (this.value == 45) return '';
-                if (this.value == 67.5) return 'ENE';
-                if (this.value == 90) return '';
-                if (this.value == 112.5) return 'ESE';
-                if (this.value == 135) return '';
-                if (this.value == 157.5) return 'SSE';
-                if (this.value == 180) return '';
-                if (this.value == 202.5) return 'SSW';
-                if (this.value == 225) return '';
-                if (this.value == 247.5) return 'WSW';
-                if (this.value == 270) return '';
-                if (this.value == 292.5) return 'WNW';
-                if (this.value == 315) return '';
-                if (this.value == 337.5) return 'NNW';
-                else return this.value;
-            });
-            /*.format('{%Value}\u00B0');*/
-
-
-    gauge.axis().scale()
-            .minimum(0)
-            .maximum(360)
-            .ticks({interval: 22.5})
-            .minorTicks({interval: 10});
-
-    gauge.axis()
-            .fill('#7c868e')
-            .startAngle(0)
-            .sweepAngle(360)
-            .width(1)
-            .ticks(
-                    {
-                        type: 'line',
-                        fill: '#ffffff',
-                        length: 0,
-                        position: 'inside'
-                    }
-            );
-
-    gauge.axis(1).labels()
-            .enabled(true)
-            .fontSize(14)
-            .padding(5)
-            .position("center-top")
-  			.anchor("left")
-  			.offsetY(-25)
-            .format(function () {
-                if (this.value == 0) return 'N';
-                if (this.value == 22.5) return '';
-                if (this.value == 45) return 'NE';
-                if (this.value == 67.5) return '';
-                if (this.value == 90) return 'E';
-                if (this.value == 112.5) return '';
-                if (this.value == 135) return 'SE';
-                if (this.value == 157.5) return '';
-                if (this.value == 180) return 'S';
-                if (this.value == 202.5) return '';
-                if (this.value == 225) return 'SW';
-                if (this.value == 247.5) return '';
-                if (this.value == 270) return 'W';
-                if (this.value == 292.5) return '';
-                if (this.value == 315) return 'NW';
-                if (this.value == 337.5) return '';
-                else return this.value;
-            });
-            /*.format('{%Value}\u00B0');*/
-
-    gauge.axis(1).scale()
-            .minimum(0)
-            .maximum(360)
-            .ticks({interval: 22.5})
-            .minorTicks({interval: 10});
-
-      gauge.axis(1)
-            .fill('#cccccc')
-            .startAngle(0)
-  			.radius(92)
-            .sweepAngle(360)
-            .width(10)
-            .ticks(
-                    {
-                        type: 'line',
-                        fill: '#ffffff',
-                        length: 11.25,
-                        position: 'center'
-                    }
-            );
-
-      gauge.axis(2).labels()
-            .enabled(false);
-
-      gauge.axis(2).scale()
-            .minimum(0)
-            .maximum(360)
-
-      gauge.axis(2)
-            .fill('#0099bc')
-            .startAngle($hour.windDir.avg.format(add_label=False)-33.75)
-            .sweepAngle(67.5)
-  			.radius(98.25)
-            .width(2)
-            .ticks(
-                    {
-                        enabled: false,
-                    }
-            );
-
-    gauge.title()
-            .padding(0)
-            .margin([0, 0, 10, 0]);
-
-    gauge.marker()
-            .type('triangledown')
-            .fill('#2d7d9a')
-            .stroke(null)
-            .size('10%')
-            .zIndex(120)
-            .radius('105');
-
-    var bigTooltipTitleSettings = {
-        fontFamily: "'Verdana', Helvetica, Arial, sans-serif",
-        fontWeight: 'normal',
-        fontSize: '14px',
-        hAlign: 'center',
-        fontColor: '#2d7d9a'
-    };
-
-    gauge.label()
-            .text('<span>AVG: $day.wind.avg.format(add_label=False)</span><br /><span style="font-Size:14px; font-Weight:bold;">NOW: $current.windSpeed.format(add_label=False)</span><br /><span>RMS: $day.wind.rms.format(add_label=False)</span>').useHtml(true)
-            .textSettings(bigTooltipTitleSettings)
-            .hAlign('center')
-            .anchor('center')
-            .padding(15, 20)
-            .background(
-                    {
-                        fill: '#fff',
-                        stroke: {
-                            thickness: 1,
-                            color: '#cccccc'
-                        }
-                    }
-            );
-
-    gauge.label(1)
-            .text('<span style="color:#cccccc;">$unit.label.windSpeed</span>').useHtml(true)
-            .textSettings(bigTooltipTitleSettings)
-            .offsetY(-55)
-            .hAlign('center')
-            .anchor('center');
-
-    // set container id for the chart
-    gauge.container('wind-gauge');
-    gauge.contextMenu(false);
-
-    var credits = gauge.credits();
-    credits.enabled(false);
-    credits.text("Griffin Park");
-
-    // initiate chart drawing
-    gauge.draw();
-});
-  </script>
+<script type="text/javascript">
+var currentDataStamp = $current.dateTime.raw;
+var liveDataStamp = $current.dateTime.raw;
+var currentwindSpeed = '$current.windSpeed.format(format_string="%.1f",add_label=False)';
+var currentwindDir = "$current.windDir.format(add_label=False)";
+var hourwindDiravg = '$hour.windDir.avg.format(format_string="%.1f",add_label=False)';
+var daywindavg = '$day.wind.avg.format(format_string="%.1f",add_label=False)';
+var daywindrms = '$day.wind.rms.format(format_string="%.1f",add_label=False)';
+</script>
+<script src="current.js"></script>
 </body>
 </html>

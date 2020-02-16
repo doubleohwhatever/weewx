@@ -166,7 +166,7 @@
             <div class="col col-6 crd graph-crd">
               <h4>RADAR (PAST 30 MIN)</h4>
                 <a href="https://meteomaps.com" target="_blank">
-                    <img style="background: url('https://loading.meteomaps.com/v1/666666/1280x720.png') no-repeat;" src="https://api.meteomaps.com/?key=6d118e9779541b0d7d146673760620f4&action=get-animation&width=1280&height=720&map-center-lat=33.401754939703224&map-center-lon=-86.67024173089601&overlay=true&base-map=default&legend=display:true;bg-color:333333;display-labels:true;display-unit-label:true;style:default;width:auto;label-unit:imperial&get=period&start=-30+minutes&end=1559964678&zoom=3&data-layer=mrms-composite-conus&data-layer-transparency=100&frames=12&frame-rate=6&box[]=color:333333;x1:0;y1:0;x2:WIDTH;y2:25&label[]=color:FFFFFF;x:5;y:11;size:18;tz:America/Chicago;text:DLTIME&warnings=display:true;data-type:nearest;warnings:most&lightning=display:true;data-type:nearest&cities=display:true;size:12;data-type:nearest;text:NAME&display-logo=true" alt="Meteo Maps" height="720" width="1280">
+                    <img style="background: url('https://loading.meteomaps.com/v1/666666/1280x720.png') no-repeat;" src="https://api.meteomaps.com/?key=6d118e9779541b0d7d146673760620f4&action=get-animation&width=1280&height=720&map-center-lat=33.401754939703224&map-center-lon=-86.67024173089601&overlay=true&base-map=default&legend=display:true;bg-color:333333;display-labels:true;display-unit-label:true;style:default;width:auto;label-unit:imperial&get=period&start=-30+minutes&end=now&zoom=3&data-layer=mrms-composite-conus&data-layer-transparency=100&frames=12&frame-rate=6&box[]=color:333333;x1:0;y1:0;x2:WIDTH;y2:25&label[]=color:FFFFFF;x:5;y:11;size:18;tz:America/Chicago;text:DLTIME&warnings=display:true;data-type:nearest;warnings:most&lightning=display:true;data-type:nearest&cities=display:true;size:12;data-type:nearest;text:NAME&display-logo=true" alt="Meteo Maps" height="720" width="1280">
                 </a>
             </div>
             <div class="col col-6 crd graph-crd">
@@ -213,21 +213,16 @@
 <!-- Javascript. jQuery etc. (see gulpfile) included in main.min.js -->
 <script src="main.min.js"></script>
 <script type="text/javascript">
-var tid = setInterval(newDataCheck, 5000);
+var tid = setInterval(newDataCheck, 15000);
 var currentDataStamp = $current.dateTime.raw;
 function newDataCheck() {
   $.getJSON("data.json", function(json) {
-      //console.log(json); // this will show the info it in firebug console
-      //alert(json["last-updated"]);
       if (json["last-updated"] > currentDataStamp) {
-        //reload page
         location.reload(true);
-      } else {
-        //update live data
       }
   });
 }
-function abortTimer() { // to be called when you want to stop the timer
+function abortTimer() {
   clearInterval(tid);
 }
 </script>
